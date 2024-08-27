@@ -1,19 +1,20 @@
 import pygame
 from random import randint, shuffle
 from rectangle import Rectangle
-from algorithm import buble_sort, insertion_sort, selection_sort
+from algorithm import buble_sort, insertion_sort, selection_sort, shell_sort
 
 pygame.init()
 pygame.font.init()
 
-WIDTH = 600
+WIDTH = 800
 HEIGHT = WIDTH
 FPS = 60
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-RECT_NUM = 20
+RECT_NUM = 100
+DELAY = WIDTH // RECT_NUM * 2
 RECT_UNIT = HEIGHT // RECT_NUM
 msg_font = pygame.font.SysFont('Consolas', 15)
 msg = msg_font.render("Buble Sorts", True, WHITE)
@@ -51,7 +52,7 @@ def change_algorithm(event):
             sorting = False
             shuffle(rectangles)
             choose_algorithm(sort_generator_index)
-        elif event.key == pygame.K_RIGHT and sort_generator_index < 3:
+        elif event.key == pygame.K_RIGHT and sort_generator_index < 4:
             sort_generator_index += 1
             sorting = False
             shuffle(rectangles)
@@ -60,11 +61,13 @@ def change_algorithm(event):
 def choose_algorithm(sort_generator_index):
     global sort_generator, rectangles
     if sort_generator_index == 1:
-        sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE)
+        sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
     elif sort_generator_index == 2:
-        sort_generator = insertion_sort(rectangles, draw_scene, window, GREEN, RED, WHITE)
+        sort_generator = insertion_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
     elif sort_generator_index == 3:
-        sort_generator = selection_sort(rectangles, draw_scene, window, GREEN, RED, WHITE)
+        sort_generator = selection_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+    elif sort_generator_index == 4:
+        sort_generator = shell_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
 
     for rect in rectangles:
         rect.color = WHITE
@@ -77,6 +80,8 @@ def change_msg(sort_generator_index):
         msg = msg_font.render("Insertion Sort", True, WHITE)
     elif sort_generator_index == 3:
         msg = msg_font.render("Selection Sort", True, WHITE)
+    elif sort_generator_index == 4:
+        msg = msg_font.render("Shell Sort", True, WHITE)
 
 clock = pygame.time.Clock()
 running = True
@@ -84,13 +89,14 @@ sorting = False
 sort_generator = None
 sort_generator_index = 1
 
-sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE) # default sort generation when starting
+sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY) # default sort generation when starting
 
 while running:
     clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            sorting = False
         toggle_sorting(event)
         change_algorithm(event)
 
