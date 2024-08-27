@@ -16,8 +16,12 @@ GREEN = (0, 255, 0)
 RECT_NUM = 100
 DELAY = WIDTH // RECT_NUM * 2
 RECT_UNIT = HEIGHT // RECT_NUM
+
 msg_font = pygame.font.SysFont('Consolas', 15)
 msg = msg_font.render("Buble Sorts", True, WHITE)
+
+time = 0
+time_msg = msg_font.render(f"Time passed : {time:.2f}", True, WHITE)
 
 rectangles = [Rectangle(i + 1, i, WIDTH // RECT_NUM, RECT_UNIT, HEIGHT, WHITE) for i in range(RECT_NUM)]
 shuffle(rectangles)
@@ -28,8 +32,8 @@ pygame.display.set_caption("Visuallization for sorting algorithms")
 def draw_scene(win):
     win.fill(BLACK)
     draw_rectangles(win)
-
     win.blit(msg, (5, 5))
+    win.blit(time_msg, (5, 10 + msg.get_height()))
     pygame.display.update()
 
 def draw_rectangles(win):
@@ -38,26 +42,32 @@ def draw_rectangles(win):
         rectangles[i].draw(win) 
 
 def toggle_sorting(event):
-    global sorting
+    global sorting, rectangles, time
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             sorting = True
         elif event.key == pygame.K_ESCAPE:
             sorting = False
-    
+        elif (event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER) and not sorting:
+            shuffle(rectangles)
+            time = 0
+            #sorting = True
+
 def change_algorithm(event):
-    global sort_generator_index, sorting, rectangles, sort_generator
+    global sort_generator_index, sorting, rectangles, sort_generator, time
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_LEFT and sort_generator_index > 1:
             sort_generator_index -= 1
             sorting = False
             shuffle(rectangles)
             choose_algorithm(sort_generator_index)
+            time = 0
         elif event.key == pygame.K_RIGHT and sort_generator_index < 6:
             sort_generator_index += 1
             sorting = False
             shuffle(rectangles)
             choose_algorithm(sort_generator_index)
+            time = 0
 
 def choose_algorithm(sort_generator_index):
     global sort_generator, rectangles
@@ -78,7 +88,7 @@ def choose_algorithm(sort_generator_index):
         rect.color = WHITE
 
 def change_msg(sort_generator_index):
-    global msg
+    global msg, time_msg, time
     if sort_generator_index == 1:
         msg = msg_font.render("Bubble Sort", True, WHITE)
     elif sort_generator_index == 2:
@@ -91,12 +101,14 @@ def change_msg(sort_generator_index):
         msg = msg_font.render("Coctail shaker Sort", True, WHITE)
     elif sort_generator_index == 6:
         msg = msg_font.render("Radix Sort", True, WHITE)
+    time_msg = msg_font.render(f"Time passed : {time:.2f}", True, WHITE)
+
 
 def finish_sorting(rectangles, draw_scene, win):
     for rect in rectangles:
         rect.color = GREEN
         draw_scene(win)
-        pygame.time.delay(DELAY)
+        pygame.time.delay(DELAY // 4)
 
     for rect in rectangles:
         rect.color = WHITE
@@ -111,6 +123,10 @@ sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, D
 
 while running:
     clock.tick(FPS)
+
+    if sorting:
+        time += 1 / FPS
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -125,6 +141,7 @@ while running:
         except StopIteration:
             sorting = False
             finish_sorting(rectangles, draw_scene, window)
+            choose_algorithm(sort_generator_index)
 
     change_msg(sort_generator_index)
     draw_scene(window)

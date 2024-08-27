@@ -1,7 +1,8 @@
-# Sorting algorithm visualizator 
+# Sorting algorithm visualizator #
 
 Controls
 
 - ESC for stoping sorting
 - SPACE for starting sorting
 - LEFT and RIGHT arrows change which algorithm will perform
+- ENTER or NUMPAD_ENTER shuffle the array while not sorting
