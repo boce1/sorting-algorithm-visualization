@@ -14,7 +14,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 RECT_NUM = 100
-DELAY = WIDTH // RECT_NUM * 2
+delay = WIDTH // RECT_NUM * 2
 RECT_UNIT = HEIGHT // RECT_NUM
 GAP = 5
 
@@ -23,7 +23,7 @@ msg = msg_font.render("Buble Sorts", True, WHITE)
 
 time = 0
 time_msg = msg_font.render(f"Time passed : {time:.2f}", True, WHITE)
-delay_msg = msg_font.render(f"Delay : {DELAY}ms", True, WHITE)
+delay_msg = msg_font.render(f"Delay : {delay}ms", True, WHITE)
 
 rectangles = [Rectangle(i + 1, i, WIDTH // RECT_NUM, RECT_UNIT, HEIGHT, WHITE) for i in range(RECT_NUM)]
 shuffle(rectangles)
@@ -31,12 +31,16 @@ shuffle(rectangles)
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Visuallization for sorting algorithms")
 
-def draw_scene(win):
+def draw_scene(win, swap_count = 0, access_count = 0):
     win.fill(BLACK)
     draw_rectangles(win)
     win.blit(msg, (GAP, GAP))
     win.blit(time_msg, (GAP, 2* GAP + msg.get_height()))
     win.blit(delay_msg, (GAP, 2 * GAP + msg.get_height() + time_msg.get_height() + GAP))
+
+    swap_msg = msg_font.render(f"Access count : {access_count}    Swaps : {swap_count}", True, WHITE)
+    win.blit(swap_msg, (GAP, 2 * GAP + msg.get_height() + time_msg.get_height() + GAP + delay_msg.get_height() + GAP))
+
     pygame.display.update()
 
 def draw_rectangles(win):
@@ -77,17 +81,17 @@ def change_algorithm(event):
 def choose_algorithm(sort_generator_index):
     global sort_generator, rectangles
     if sort_generator_index == 1:
-        sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
     elif sort_generator_index == 2:
-        sort_generator = insertion_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = insertion_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
     elif sort_generator_index == 3:
-        sort_generator = selection_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = selection_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
     elif sort_generator_index == 4:
-        sort_generator = shell_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = shell_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
     elif sort_generator_index == 5:
-        sort_generator = shaker_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = shaker_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
     elif sort_generator_index == 6:
-        sort_generator = radix_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+        sort_generator = radix_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay)
 
     for rect in rectangles:
         rect.color = WHITE
@@ -113,7 +117,7 @@ def finish_sorting(rectangles, draw_scene, win):
     for rect in rectangles:
         rect.color = GREEN
         draw_scene(win)
-        pygame.time.delay(DELAY // 4)
+        pygame.time.delay(delay // 4)
 
     for rect in rectangles:
         rect.color = WHITE
@@ -124,7 +128,7 @@ sorting = False
 sort_generator = None
 sort_generator_index = 1
 
-sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY) # default sort generation when starting
+sort_generator = buble_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, delay) # default sort generation when starting
 
 while running:
     clock.tick(FPS)
