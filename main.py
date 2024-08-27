@@ -22,7 +22,7 @@ msg_font = pygame.font.SysFont('Consolas', 15)
 msg = msg_font.render("Buble Sorts", True, WHITE)
 
 time = 0
-time_msg = msg_font.render(f"Time passed : {time:.2f}", True, WHITE)
+time_msg = msg_font.render(f"Time passed : {time:.2f}", True, GREEN)
 delay_msg = msg_font.render(f"Delay : {delay}ms", True, WHITE)
 
 rectangles = [Rectangle(i + 1, i, WIDTH // RECT_NUM, RECT_UNIT, HEIGHT, WHITE) for i in range(RECT_NUM)]
@@ -38,7 +38,7 @@ def draw_scene(win, swap_count = 0, access_count = 0):
     win.blit(time_msg, (GAP, 2* GAP + msg.get_height()))
     win.blit(delay_msg, (GAP, 2 * GAP + msg.get_height() + time_msg.get_height() + GAP))
 
-    swap_msg = msg_font.render(f"Access count : {access_count}    Swaps : {swap_count}", True, WHITE)
+    swap_msg = msg_font.render(f"Access count : {access_count}    Swaps : {swap_count}", True, RED)
     win.blit(swap_msg, (GAP, 2 * GAP + msg.get_height() + time_msg.get_height() + GAP + delay_msg.get_height() + GAP))
 
     pygame.display.update()
@@ -110,7 +110,7 @@ def change_msg(sort_generator_index):
         msg = msg_font.render("Coctail shaker Sort", True, WHITE)
     elif sort_generator_index == 6:
         msg = msg_font.render("Radix Sort", True, WHITE)
-    time_msg = msg_font.render(f"Time passed : {time:.2f}", True, WHITE)
+    time_msg = msg_font.render(f"Time passed : {time:.2f}", True, GREEN)
 
 
 def finish_sorting(rectangles, draw_scene, win):
