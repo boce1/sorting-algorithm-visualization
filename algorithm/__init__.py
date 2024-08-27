@@ -73,3 +73,86 @@ def shell_sort(arr, draw_scene, window, check_color, replace_color, regular_colo
                 j -= gap
                 yield
         gap //= 2
+
+def counting_sort(arr, exp, draw_scene, window, check_color, replace_color, regular_color, delay):
+    n = len(arr)
+    count_arr = [0] * 10
+
+    for i in range(n):
+        digit = arr[i].val // exp % 10
+        count_arr[digit] += 1
+
+    for i in range(1, 10):
+        count_arr[i] += count_arr[i - 1]
+
+    out = [0] * n
+    for i in range(n - 1, -1, -1):
+        arr[i].color = check_color
+        arr[count_arr[digit] - 1].color = replace_color
+        draw_scene(window)
+        pygame.time.delay(delay) 
+
+        arr[i].color = regular_color
+        arr[count_arr[digit] - 1].color = regular_color
+
+        digit = arr[i].val // exp % 10
+        out[count_arr[digit] - 1] = arr[i]
+        count_arr[digit] -= 1
+        yield
+    
+    for i in range(n):
+        arr[i] = out[i]
+        arr[i].color = regular_color
+        yield
+
+def radix_sort(arr, draw_scene, window, check_color, replace_color, regular_color, delay):
+    m = max([rect.val for rect in arr])
+
+    exp = 1
+    while m // exp > 0:
+        yield from counting_sort(arr, exp, draw_scene, window, check_color, replace_color, regular_color, delay)
+        exp *= 10
+
+def shaker_sort(arr, draw_scene, window, check_color, replace_color, regular_color, delay):
+    left = 0
+    right = len(arr) - 1
+    k = left
+    last_swap = left
+
+    while left < right:
+        while k < right:
+            arr[k].color = check_color
+            arr[k + 1].color = replace_color
+            draw_scene(window)
+            pygame.time.delay(delay) 
+
+            if arr[k].val > arr[k + 1].val:
+                swap_elements(arr, k, k + 1)
+                last_swap = k
+
+            arr[k].color = regular_color
+            arr[k + 1].color = regular_color
+
+            k += 1
+            yield
+
+        right = last_swap
+        k = right
+
+        while k > left:
+            arr[k].color = check_color
+            arr[k - 1].color = replace_color
+            draw_scene(window)
+            pygame.time.delay(delay) 
+            if arr[k].val < arr[k - 1].val:
+                swap_elements(arr, k, k - 1)
+                last_swap = k
+
+            arr[k].color = regular_color
+            arr[k - 1].color = regular_color
+
+            k -= 1
+            yield
+
+        left = last_swap
+        k = left

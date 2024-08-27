@@ -1,7 +1,7 @@
 import pygame
 from random import randint, shuffle
 from rectangle import Rectangle
-from algorithm import buble_sort, insertion_sort, selection_sort, shell_sort
+from algorithm import buble_sort, insertion_sort, selection_sort, shell_sort, radix_sort, shaker_sort
 
 pygame.init()
 pygame.font.init()
@@ -28,6 +28,7 @@ pygame.display.set_caption("Visuallization for sorting algorithms")
 def draw_scene(win):
     win.fill(BLACK)
     draw_rectangles(win)
+
     win.blit(msg, (5, 5))
     pygame.display.update()
 
@@ -52,7 +53,7 @@ def change_algorithm(event):
             sorting = False
             shuffle(rectangles)
             choose_algorithm(sort_generator_index)
-        elif event.key == pygame.K_RIGHT and sort_generator_index < 4:
+        elif event.key == pygame.K_RIGHT and sort_generator_index < 6:
             sort_generator_index += 1
             sorting = False
             shuffle(rectangles)
@@ -68,6 +69,10 @@ def choose_algorithm(sort_generator_index):
         sort_generator = selection_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
     elif sort_generator_index == 4:
         sort_generator = shell_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+    elif sort_generator_index == 5:
+        sort_generator = shaker_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
+    elif sort_generator_index == 6:
+        sort_generator = radix_sort(rectangles, draw_scene, window, GREEN, RED, WHITE, DELAY)
 
     for rect in rectangles:
         rect.color = WHITE
@@ -82,6 +87,19 @@ def change_msg(sort_generator_index):
         msg = msg_font.render("Selection Sort", True, WHITE)
     elif sort_generator_index == 4:
         msg = msg_font.render("Shell Sort", True, WHITE)
+    elif sort_generator_index == 5:
+        msg = msg_font.render("Coctail shaker Sort", True, WHITE)
+    elif sort_generator_index == 6:
+        msg = msg_font.render("Radix Sort", True, WHITE)
+
+def finish_sorting(rectangles, draw_scene, win):
+    for rect in rectangles:
+        rect.color = GREEN
+        draw_scene(win)
+        pygame.time.delay(DELAY)
+
+    for rect in rectangles:
+        rect.color = WHITE
 
 clock = pygame.time.Clock()
 running = True
@@ -106,6 +124,7 @@ while running:
             next(sort_generator)
         except StopIteration:
             sorting = False
+            finish_sorting(rectangles, draw_scene, window)
 
     change_msg(sort_generator_index)
     draw_scene(window)

@@ -10,7 +10,7 @@ class Rectangle:
         self.color = color
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.rect_width, self.val * self.unit))
+        pygame.draw.rect(win, self.color, (self.x + 1, self.y + 1, self.rect_width - 1, self.val * self.unit - 1))
 
     def update_cords(self, arr_possition, window_height):
         self.x = arr_possition * self.rect_width
