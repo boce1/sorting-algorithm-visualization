@@ -1,5 +1,5 @@
 import pygame
-from random import randint, shuffle
+from random import shuffle
 from rectangle import Rectangle
 from algorithm import buble_sort, insertion_sort, selection_sort, shell_sort, radix_sort, shaker_sort
 
